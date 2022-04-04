@@ -1,0 +1,47 @@
+name: Deploy phess web stack
+
+on:
+  push:
+    paths:
+
+
+
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+        python-version: [3.x]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: action/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: run synth
+        run: |
+          cdk synth
+      - name: deploy stack
+        run: |
+          cdk deploy --all --require-approval never

@@ -13,6 +13,14 @@ class PhessWebStack(Stack):
 
         # The code that defines your stack goes here
 
+        # amplify
+
+        # cloudfront distribution
+
+        # route 53
+
+        #
+
         # example resource
         # queue = sqs.Queue(
         #     self, "PhessWebQueue",

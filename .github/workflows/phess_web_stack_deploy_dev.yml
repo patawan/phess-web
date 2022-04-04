@@ -4,10 +4,12 @@ on:
   push:
     paths:
 
-
-
     branches:
       - dev
+
+env:
+  CDK_DEFAULT_ACCOUNT: 735647458321
+  CDK_DEFAULT_REGION: us-east-1
 
 jobs:
   build:

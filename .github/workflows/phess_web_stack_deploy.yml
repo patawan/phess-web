@@ -5,7 +5,7 @@ on:
     paths:
 
     branches:
-      - dev
+      - main
 
 env:
   CDK_DEFAULT_ACCOUNT: 735647458321

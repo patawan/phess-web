@@ -1,7 +1,7 @@
 from aws_cdk import (
-    # Duration,
     Stack,
     aws_s3 as s3,
+    aws_iam as iam,
     aws_certificatemanager as cert,
     aws_route53 as route53,
     aws_route53_targets as targets,
@@ -39,7 +39,17 @@ class PhessWebStack(Stack):
             website_index_document="index.html",
         )
 
-        domain_bucket.grant_public_access
+        domain_bucket.add_to_resource_policy(
+            iam.PolicyStatement(
+                sid="PublicReadGetObject",
+                principals=[iam.AnyPrincipal()],
+                actions=["s3:GetObject"],
+                resources=[
+                    f"{domain_bucket.bucket_arn}",
+                    f"{domain_bucket.bucket_arn}/*"
+                ]
+            )
+        )
 
         # Create S3 bucket for subdomain www.patrickhess.dev
         subdomain_bucket = s3.Bucket(

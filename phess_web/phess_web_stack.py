@@ -108,7 +108,7 @@ class PhessWebStack(Stack):
             scope=self,
             id="phess-web-arecord2",
             target=route53.RecordTarget.from_alias(
-                targets.BucketWebsiteTarget(domain_bucket)
+                targets.BucketWebsiteTarget(subdomain_bucket)
             ),
             zone=hosted_zone
         )

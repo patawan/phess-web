@@ -97,8 +97,7 @@ class PhessWebStack(Stack):
                 viewer_protocol_policy=cf.ViewerProtocolPolicy.HTTPS_ONLY
             ),
             domain_names=[
-                domain,
-                subdomain
+                domain
             ],
             certificate=domain_cert,
             default_root_object="index.html",

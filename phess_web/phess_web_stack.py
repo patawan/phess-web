@@ -97,8 +97,7 @@ class PhessWebStack(Stack):
                 viewer_protocol_policy=cf.ViewerProtocolPolicy.HTTPS_ONLY
             ),
             domain_names=[
-                domain,
-                subdomain
+                domain
             ],
             certificate=domain_cert,
             default_root_object="index.html",
@@ -111,15 +110,6 @@ class PhessWebStack(Stack):
         domain_a_record = route53.ARecord(
             scope=self,
             id="phess-web-arecord",
-            target=route53.RecordTarget.from_alias(
-                targets.CloudFrontTarget(phess_web_distribution)
-            ),
-            zone=hosted_zone
-        )
-
-        subdomain_a_record = route53.ARecord(
-            scope=self,
-            id="phess-web-arecord2",
             target=route53.RecordTarget.from_alias(
                 targets.CloudFrontTarget(phess_web_distribution)
             ),

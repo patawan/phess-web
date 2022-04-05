@@ -30,7 +30,6 @@ class PhessWebStack(Stack):
         domain_bucket = s3.Bucket(
             scope=self,
             id="domain-bucket",
-            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             public_read_access=True,
             bucket_name=domain,
             enforce_ssl=True,

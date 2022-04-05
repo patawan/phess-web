@@ -108,13 +108,23 @@ class PhessWebStack(Stack):
             geo_restriction=cf.GeoRestriction.allowlist("US")
         )
 
-        cf_a_record = route53.ARecord(
+        domain_a_record = route53.ARecord(
             scope=self,
-            id="phess-cf-arecord",
-            target=targets.CloudFrontTarget(phess_web_distribution),
+            id="phess-web-arecord",
+            target=route53.RecordTarget.from_alias(
+                targets.CloudFrontTarget(phess_web_distribution)
+            ),
             zone=hosted_zone
         )
 
+        subdomain_a_record = route53.ARecord(
+            scope=self,
+            id="phess-web-arecord2",
+            target=route53.RecordTarget.from_alias(
+                targets.CloudFrontTarget(phess_web_distribution)
+            ),
+            zone=hosted_zone
+        )
 
         # API gateway
 

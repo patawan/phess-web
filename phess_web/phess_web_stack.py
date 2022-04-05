@@ -30,8 +30,8 @@ class PhessWebStack(Stack):
             bucket_name=domain,
             enforce_ssl=True,
             versioned=True,
-            website_error_document="/404.css",
-            website_index_document="/index.html",
+            website_error_document="404.css",
+            website_index_document="index.html",
         )
 
         # Create S3 bucket for subdomain www.patrickhess.dev

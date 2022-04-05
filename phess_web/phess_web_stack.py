@@ -47,14 +47,6 @@ class PhessWebStack(Stack):
             )
         )
 
-        # Add TLS certificate
-        domain_cert = cert.Certificate(
-            scope=self,
-            id="phess-domain-cert",
-            domain_name=f"*.{domain}"
-        )
-
-
         # cloudfront distribution
 
         # route 53
@@ -63,6 +55,14 @@ class PhessWebStack(Stack):
             scope=self,
             id="phess-web-hosted-zone",
             zone_name=domain
+        )
+
+        # Add TLS certificate
+        domain_cert = cert.Certificate(
+            scope=self,
+            id="phess-domain-cert",
+            domain_name=f"*.{domain}",
+            validation=cert.CertificateValidation.from_dns(hosted_zone)
         )
 
         # API gateway

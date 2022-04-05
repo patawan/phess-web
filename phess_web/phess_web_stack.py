@@ -3,8 +3,9 @@ from aws_cdk import (
     Stack,
     aws_s3 as s3,
     aws_certificatemanager as cert,
-    aws_route53 as route53
-    # aws_sqs as sqs,
+    aws_route53 as route53,
+    aws_cloudfront as cf,
+    aws_cloudfront_origins as origins
 )
 from constructs import Construct
 import configparser
@@ -23,6 +24,8 @@ class PhessWebStack(Stack):
 
         # Create S3 bucket for Domain patrickhess.dev
         # block public access until ready to go live
+        # first create static web logging bucket
+
         domain_bucket = s3.Bucket(
             scope=self,
             id="domain-bucket",
@@ -47,7 +50,29 @@ class PhessWebStack(Stack):
             )
         )
 
+        logging_bucket = s3.Bucket(
+            scope=self,
+            id="phess-web-logging-bucket",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            bucket_name=f"logs.{domain}"
+        )
+
         # cloudfront distribution
+        phess_web_distribution = cf.Distribution(
+            scope=self,
+            id="phess-web-cf-dist",
+            default_behavior=cf.BehaviorOptions(
+                origin=origins.S3Origin(
+                    bucket=domain_bucket
+                ),
+                viewer_protocol_policy=cf.ViewerProtocolPolicy.HTTPS_ONLY
+            ),
+            default_root_object="index.html",
+            enable_logging=True,
+            log_bucket=logging_bucket,
+            price_class=cf.PriceClass.PRICE_CLASS_100,
+            geo_restriction=cf.GeoRestriction.allowlist("US")
+        )
 
         # route 53
 

@@ -26,13 +26,6 @@ class PhessWebStack(Stack):
         # block public access until ready to go live
         # first create static web logging bucket
 
-        logging_bucket = s3.Bucket(
-            scope=self,
-            id="phess-web-logging-bucket",
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            bucket_name=f"logs.{domain}"
-        )
-
         domain_bucket = s3.Bucket(
             scope=self,
             id="domain-bucket",
@@ -55,6 +48,13 @@ class PhessWebStack(Stack):
             website_redirect=s3.RedirectTarget(
                 host_name=domain
             )
+        )
+
+        logging_bucket = s3.Bucket(
+            scope=self,
+            id="phess-web-logging-bucket",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            bucket_name=f"logs.{domain}"
         )
 
         # cloudfront distribution

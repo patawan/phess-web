@@ -2,6 +2,7 @@ from aws_cdk import (
     # Duration,
     Stack,
     aws_s3 as s3,
+    aws_certificatemanager as cert,
     aws_route53 as route53
     # aws_sqs as sqs,
 )
@@ -28,7 +29,9 @@ class PhessWebStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             bucket_name=domain,
             enforce_ssl=True,
-            versioned=True
+            versioned=True,
+            website_error_document="/templates/404.css",
+            website_index_document="/templates/index.html",
         )
 
         # Create S3 bucket for subdomain www.patrickhess.dev
@@ -38,7 +41,17 @@ class PhessWebStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             bucket_name=subdomain,
             enforce_ssl=True,
-            versioned=True
+            versioned=True,
+            website_redirect=s3.RedirectTarget(
+                host_name=domain
+            )
+        )
+
+        # Add TLS certificate
+        domain_cert = cert.Certificate(
+            scope=self,
+            id="phess-domain-cert",
+            domain_name=f"*.{domain}"
         )
 
         # amplify

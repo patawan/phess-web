@@ -34,7 +34,7 @@ class PhessWebStack(Stack):
             bucket_name=domain,
             enforce_ssl=True,
             versioned=True,
-            website_error_document="404.css",
+            website_error_document="404.html",
             website_index_document="index.html",
         )
 

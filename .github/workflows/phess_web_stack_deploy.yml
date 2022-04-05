@@ -9,7 +9,7 @@ on:
 
 env:
   CDK_DEFAULT_ACCOUNT: 735647458321
-  CDK_DEFAULT_REGION: us-west-1
+  CDK_DEFAULT_REGION: us-east-1
 
 jobs:
   build:

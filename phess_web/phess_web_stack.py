@@ -100,6 +100,7 @@ class PhessWebStack(Stack):
                 domain,
                 subdomain
             ],
+            certificate=domain_cert,
             default_root_object="index.html",
             enable_logging=True,
             log_bucket=logging_bucket,

@@ -71,6 +71,21 @@ class PhessWebStack(Stack):
             bucket_name=f"logs.{domain}"
         )
 
+        # route 53
+        hosted_zone = route53.HostedZone(
+            scope=self,
+            id="phess-web-hosted-zone",
+            zone_name=domain
+        )
+
+        # Add TLS certificate
+        domain_cert = cert.Certificate(
+            scope=self,
+            id="phess-domain-cert",
+            domain_name=f"*.{domain}",
+            validation=cert.CertificateValidation.from_dns(hosted_zone)
+        )
+
         # cloudfront distribution
         phess_web_distribution = cf.Distribution(
             scope=self,
@@ -81,18 +96,16 @@ class PhessWebStack(Stack):
                 ),
                 viewer_protocol_policy=cf.ViewerProtocolPolicy.HTTPS_ONLY
             ),
+            domain_names=[
+                domain,
+                subdomain
+            ],
+            certificate=domain_cert,
             default_root_object="index.html",
             enable_logging=True,
             log_bucket=logging_bucket,
             price_class=cf.PriceClass.PRICE_CLASS_100,
             geo_restriction=cf.GeoRestriction.allowlist("US")
-        )
-
-        # route 53
-        hosted_zone = route53.HostedZone(
-            scope=self,
-            id="phess-web-hosted-zone",
-            zone_name=domain
         )
 
         domain_a_record = route53.ARecord(
@@ -111,14 +124,6 @@ class PhessWebStack(Stack):
                 targets.BucketWebsiteTarget(subdomain_bucket)
             ),
             zone=hosted_zone
-        )
-
-        # Add TLS certificate
-        domain_cert = cert.Certificate(
-            scope=self,
-            id="phess-domain-cert",
-            domain_name=f"*.{domain}",
-            validation=cert.CertificateValidation.from_dns(hosted_zone)
         )
 
         # API gateway

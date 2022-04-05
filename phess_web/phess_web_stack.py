@@ -4,6 +4,7 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_certificatemanager as cert,
     aws_route53 as route53,
+    aws_route53_targets as targets,
     aws_cloudfront as cf,
     aws_cloudfront_origins as origins
 )
@@ -29,7 +30,7 @@ class PhessWebStack(Stack):
         domain_bucket = s3.Bucket(
             scope=self,
             id="domain-bucket",
-            #block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            # block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             public_read_access=True,
             bucket_name=domain,
             enforce_ssl=True,
@@ -78,11 +79,19 @@ class PhessWebStack(Stack):
         )
 
         # route 53
-
         hosted_zone = route53.HostedZone(
             scope=self,
             id="phess-web-hosted-zone",
             zone_name=domain
+        )
+
+        phess_a_record = route53.ARecord(
+            scope=self,
+            id="phess-web-arecord",
+            target=route53.RecordTarget.from_alias(
+                targets.BucketWebsiteTarget(domain_bucket)
+            ),
+            zone=hosted_zone
         )
 
         # Add TLS certificate

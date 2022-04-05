@@ -117,15 +117,6 @@ class PhessWebStack(Stack):
             zone=hosted_zone
         )
 
-        subdomain_a_record = route53.ARecord(
-            scope=self,
-            id="phess-web-arecord2",
-            target=route53.RecordTarget.from_alias(
-                targets.CloudFrontTarget(phess_web_distribution)
-            ),
-            zone=hosted_zone
-        )
-
         # API gateway
 
         # example resource

@@ -95,9 +95,18 @@ class PhessWebStack(Stack):
             zone_name=domain
         )
 
-        phess_a_record = route53.ARecord(
+        domain_a_record = route53.ARecord(
             scope=self,
             id="phess-web-arecord",
+            target=route53.RecordTarget.from_alias(
+                targets.BucketWebsiteTarget(domain_bucket)
+            ),
+            zone=hosted_zone
+        )
+
+        subdomain_a_record = route53.ARecord(
+            scope=self,
+            id="phess-web-arecord2",
             target=route53.RecordTarget.from_alias(
                 targets.BucketWebsiteTarget(domain_bucket)
             ),

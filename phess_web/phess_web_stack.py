@@ -82,6 +82,7 @@ class PhessWebStack(Stack):
             scope=self,
             id="phess-domain-cert",
             domain_name=f"*.{domain}",
+            subject_alternative_names=[domain],
             validation=cert.CertificateValidation.from_dns(hosted_zone)
         )
 

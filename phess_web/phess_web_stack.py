@@ -6,7 +6,8 @@ from aws_cdk import (
     aws_route53 as route53,
     aws_route53_targets as targets,
     aws_cloudfront as cf,
-    aws_cloudfront_origins as origins
+    aws_cloudfront_origins as origins,
+    aws_lambda as _lambda
 )
 from constructs import Construct
 import configparser

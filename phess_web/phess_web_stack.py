@@ -130,20 +130,33 @@ class PhessWebStack(Stack):
 
         # create s3 bucket for dumps of markov models
 
+        # create iam role for running lambdas
+        phess_web_lambda_role = iam.Role(
+            scope=self,
+            id="phess-web-lambda-role",
+            role_name="phess-web-lambda-role",
+            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
+                iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambda_FullAccess")
+            ]
+        )
+
         # lambda on cron to create new json dumps daily
 
         markov_modeling_lambda = _lambda.DockerImageFunction(
             scope=self,
             id="office-markov-lambda",
             code=_lambda.DockerImageCode.from_image_asset(
-                directory=,
-            )
+                directory="phess_web/lambda/data_ingestion_model_build/"
+            ),
+            role=phess_web_lambda_role
         )
 
         # lambda function to ingest the json dumps
         # Generates a line of text from the dumps
 
-        text_gen_lambda
+        # text_gen_lambda
 
         # API gateway
         # gets called from my webpage

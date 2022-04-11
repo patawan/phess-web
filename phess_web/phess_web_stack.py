@@ -128,7 +128,27 @@ class PhessWebStack(Stack):
             record_name=f"*.{domain}"
         )
 
+        # create s3 bucket for dumps of markov models
+
+        # lambda on cron to create new json dumps daily
+
+        markov_modeling_lambda = _lambda.DockerImageFunction(
+            scope=self,
+            id="office-markov-lambda",
+            code=_lambda.DockerImageCode.from_image_asset(
+                directory=,
+            )
+        )
+
+        # lambda function to ingest the json dumps
+        # Generates a line of text from the dumps
+
+        text_gen_lambda
+
         # API gateway
+        # gets called from my webpage
+        # calls the text gen lambda and displays a result
+
 
         # example resource
         # queue = sqs.Queue(

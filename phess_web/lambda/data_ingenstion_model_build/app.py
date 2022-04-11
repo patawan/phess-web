@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 import markovify as mk
-import nltk
 import re
 import json
 
@@ -80,6 +79,7 @@ pam_model_json = pam_modelNLTK.to_json()
 
 
 # Below cells export to cwd. I then copied them to desktop for easy importing into the flask app.
+# these should probably get sent to s3
 with open('michael_model_json.txt', 'w') as outfile:
     json.dump(michael_model_json, outfile)
 with open('jim_model_json.txt', 'w') as outfile:

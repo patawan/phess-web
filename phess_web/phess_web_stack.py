@@ -6,7 +6,8 @@ from aws_cdk import (
     aws_route53 as route53,
     aws_route53_targets as targets,
     aws_cloudfront as cf,
-    aws_cloudfront_origins as origins
+    aws_cloudfront_origins as origins,
+    aws_lambda as _lambda
 )
 from constructs import Construct
 import configparser
@@ -127,7 +128,40 @@ class PhessWebStack(Stack):
             record_name=f"*.{domain}"
         )
 
+        # create s3 bucket for dumps of markov models
+
+        # create iam role for running lambdas
+        phess_web_lambda_role = iam.Role(
+            scope=self,
+            id="phess-web-lambda-role",
+            role_name="phess-web-lambda-role",
+            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
+                iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambda_FullAccess")
+            ]
+        )
+
+        # lambda on cron to create new json dumps daily
+
+        markov_modeling_lambda = _lambda.DockerImageFunction(
+            scope=self,
+            id="office-markov-lambda",
+            code=_lambda.DockerImageCode.from_image_asset(
+                directory="phess_web/lambda/data_ingestion_model_build/"
+            ),
+            role=phess_web_lambda_role
+        )
+
+        # lambda function to ingest the json dumps
+        # Generates a line of text from the dumps
+
+        # text_gen_lambda
+
         # API gateway
+        # gets called from my webpage
+        # calls the text gen lambda and displays a result
+
 
         # example resource
         # queue = sqs.Queue(

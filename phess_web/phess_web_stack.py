@@ -170,9 +170,11 @@ class PhessWebStack(Stack):
                 minute="0",
                 hour="0"
             ),
-            targets=event_targets.LambdaFunction(
-                handler=markov_modeling_lambda
-            )
+            targets=[
+                event_targets.LambdaFunction(
+                    handler=markov_modeling_lambda
+                    )
+            ]
         )
 
         # text_gen_lambda

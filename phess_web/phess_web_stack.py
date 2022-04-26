@@ -9,7 +9,7 @@ from aws_cdk import (
     aws_cloudfront_origins as origins,
     aws_lambda as _lambda,
     aws_events as events,
-    aws_events_targets as targets
+    aws_events_targets as event_targets
 )
 from constructs import Construct
 import configparser
@@ -170,7 +170,7 @@ class PhessWebStack(Stack):
                 minute="0",
                 hour="0"
             ),
-            targets=targets.LambdaFunction(
+            targets=event_targets.LambdaFunction(
                 handler=markov_modeling_lambda
             )
         )

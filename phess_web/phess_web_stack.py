@@ -7,7 +7,9 @@ from aws_cdk import (
     aws_route53_targets as targets,
     aws_cloudfront as cf,
     aws_cloudfront_origins as origins,
-    aws_lambda as _lambda
+    aws_lambda as _lambda,
+    aws_events as events,
+    aws_events_targets as targets
 )
 from constructs import Construct
 import configparser
@@ -129,6 +131,13 @@ class PhessWebStack(Stack):
         )
 
         # create s3 bucket for dumps of markov models
+        # no encryption needed - not sensitive data
+        model_dump_bucket = s3.Bucket(
+            scope=self,
+            id="office-model-bucket",
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            bucket_name="office-model-bucket"
+        )
 
         # create iam role for running lambdas
         phess_web_lambda_role = iam.Role(
@@ -142,8 +151,8 @@ class PhessWebStack(Stack):
             ]
         )
 
-        # lambda on cron to create new json dumps daily
-
+        # lambda function to ingest the json dumps
+        # Generates a line of text from the dumps
         markov_modeling_lambda = _lambda.DockerImageFunction(
             scope=self,
             id="office-markov-lambda",
@@ -153,8 +162,18 @@ class PhessWebStack(Stack):
             role=phess_web_lambda_role
         )
 
-        # lambda function to ingest the json dumps
-        # Generates a line of text from the dumps
+        # lambda on cron to create new json dumps daily
+        modeling_lambda_rule = events.Rule(
+            scope=self,
+            id="modeling-lambda-rule",
+            schedule=events.Schedule.cron(
+                minute="0",
+                hour="0"
+            ),
+            targets=targets.LambdaFunction(
+                handler=markov_modeling_lambda
+            )
+        )
 
         # text_gen_lambda
 

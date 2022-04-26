@@ -2,6 +2,8 @@ import pandas as pd
 import os
 import markovify as mk
 import re
+import json
+import boto3
 
 
 # Creating and training the models
@@ -62,5 +64,21 @@ def create_models(event, context):
     jim_model_json = jim_modelNLTK.to_json()
     dwight_model_json = dwight_modelNLTK.to_json()
     pam_model_json = pam_modelNLTK.to_json()
+
+    model_json_dict = {
+        "michael_model_json": michael_model_json,
+        "jim_model_json": jim_model_json,
+        "dwight_model_json": dwight_model_json,
+        "pam_model_json": pam_model_json
+    }
+
+    s3 = boto3.client("s3")
+
+    for name in model_json_dict.keys():
+        s3.put_object(
+            Body=json.dumps(model_json_dict["name"]),
+            Bucket="office-model-bucket",
+            Key=f"{name}.json"
+        )
 
     print("Models created and serialized")

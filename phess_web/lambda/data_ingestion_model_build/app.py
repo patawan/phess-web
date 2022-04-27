@@ -81,4 +81,4 @@ def create_models(event, context):
             Key=f"{name}.json"
         )
 
-    print("Models created and serialized")
+    print("Models created and serialized!")

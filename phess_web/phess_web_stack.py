@@ -183,10 +183,3 @@ class PhessWebStack(Stack):
         # API gateway
         # gets called from my webpage
         # calls the text gen lambda and displays a result
-
-
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "PhessWebQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )

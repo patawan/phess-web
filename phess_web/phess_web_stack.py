@@ -9,7 +9,8 @@ from aws_cdk import (
     aws_cloudfront_origins as origins,
     aws_lambda as _lambda,
     aws_events as events,
-    aws_events_targets as event_targets
+    aws_events_targets as event_targets,
+    aws_apigateway as gateway
 )
 from constructs import Construct
 import configparser

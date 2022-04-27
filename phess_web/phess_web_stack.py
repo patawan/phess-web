@@ -1,4 +1,5 @@
 from aws_cdk import (
+    Duration,
     Stack,
     aws_s3 as s3,
     aws_iam as iam,
@@ -160,7 +161,9 @@ class PhessWebStack(Stack):
             code=_lambda.DockerImageCode.from_image_asset(
                 directory="phess_web/lambda/data_ingestion_model_build/"
             ),
-            role=phess_web_lambda_role
+            role=phess_web_lambda_role,
+            memory_size=(1024),
+            timeout=Duration.minutes(15)
         )
 
         # lambda on cron to create new json dumps daily

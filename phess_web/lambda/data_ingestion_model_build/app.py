@@ -76,7 +76,7 @@ def create_models(event, context):
 
     for name in model_json_dict.keys():
         s3.put_object(
-            Body=json.dumps(model_json_dict["name"]),
+            Body=json.dumps(model_json_dict[name]),
             Bucket="office-model-bucket",
             Key=f"{name}.json"
         )

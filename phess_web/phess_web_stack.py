@@ -182,7 +182,7 @@ class PhessWebStack(Stack):
             http_method="GET",
             integration=gateway.LambdaIntegration(
                 handler=text_gen_lambda,
-                proxy=True,
+                proxy=False,
                 request_parameters={"integration.request.querystring.character":"method.request.querystring.character"}
             ),
             request_parameters={"method.request.querystring.character": True}

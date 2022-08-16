@@ -11,14 +11,13 @@ from aws_cdk import (
     aws_lambda as _lambda,
     aws_events as events,
     aws_events_targets as event_targets,
-    aws_apigateway as gateway
+    aws_apigateway as gateway,
 )
 from constructs import Construct
 import configparser
 
 
 class PhessWebStack(Stack):
-
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
@@ -50,8 +49,8 @@ class PhessWebStack(Stack):
                 actions=["s3:GetObject"],
                 resources=[
                     f"{domain_bucket.bucket_arn}",
-                    f"{domain_bucket.bucket_arn}/*"
-                ]
+                    f"{domain_bucket.bucket_arn}/*",
+                ],
             )
         )
 
@@ -63,23 +62,19 @@ class PhessWebStack(Stack):
             bucket_name=subdomain,
             enforce_ssl=True,
             versioned=True,
-            website_redirect=s3.RedirectTarget(
-                host_name=domain
-            )
+            website_redirect=s3.RedirectTarget(host_name=domain),
         )
 
         logging_bucket = s3.Bucket(
             scope=self,
             id="phess-web-logging-bucket",
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            bucket_name=f"logs.{domain}"
+            bucket_name=f"logs.{domain}",
         )
 
         # route 53
         hosted_zone = route53.HostedZone(
-            scope=self,
-            id="phess-web-hosted-zone",
-            zone_name=domain
+            scope=self, id="phess-web-hosted-zone", zone_name=domain
         )
 
         # Add TLS certificate
@@ -88,7 +83,7 @@ class PhessWebStack(Stack):
             id="phess-domain-cert",
             domain_name=f"*.{domain}",
             subject_alternative_names=[domain],
-            validation=cert.CertificateValidation.from_dns(hosted_zone)
+            validation=cert.CertificateValidation.from_dns(hosted_zone),
         )
 
         # cloudfront distribution
@@ -96,21 +91,16 @@ class PhessWebStack(Stack):
             scope=self,
             id="phess-web-cf-dist",
             default_behavior=cf.BehaviorOptions(
-                origin=origins.S3Origin(
-                    bucket=domain_bucket
-                ),
-                viewer_protocol_policy=cf.ViewerProtocolPolicy.HTTPS_ONLY
+                origin=origins.S3Origin(bucket=domain_bucket),
+                viewer_protocol_policy=cf.ViewerProtocolPolicy.HTTPS_ONLY,
             ),
-            domain_names=[
-                domain,
-                f"*.{domain}"
-            ],
+            domain_names=[domain, f"*.{domain}"],
             certificate=domain_cert,
             default_root_object="index.html",
             enable_logging=True,
             log_bucket=logging_bucket,
             price_class=cf.PriceClass.PRICE_CLASS_100,
-            geo_restriction=cf.GeoRestriction.allowlist("US")
+            geo_restriction=cf.GeoRestriction.allowlist("US"),
         )
 
         domain_a_record = route53.ARecord(
@@ -119,7 +109,7 @@ class PhessWebStack(Stack):
             target=route53.RecordTarget.from_alias(
                 targets.CloudFrontTarget(phess_web_distribution)
             ),
-            zone=hosted_zone
+            zone=hosted_zone,
         )
 
         subdomain_a_record = route53.ARecord(
@@ -129,7 +119,7 @@ class PhessWebStack(Stack):
                 targets.CloudFrontTarget(phess_web_distribution)
             ),
             zone=hosted_zone,
-            record_name=f"*.{domain}"
+            record_name=f"*.{domain}",
         )
 
         # create s3 bucket for dumps of markov models
@@ -138,7 +128,7 @@ class PhessWebStack(Stack):
             scope=self,
             id="office-model-bucket",
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            bucket_name="office-model-bucket"
+            bucket_name="office-model-bucket",
         )
 
         # create iam role for running lambdas
@@ -149,8 +139,8 @@ class PhessWebStack(Stack):
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
-                iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambda_FullAccess")
-            ]
+                iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambda_FullAccess"),
+            ],
         )
 
         # lambda function to ingest the json dumps
@@ -163,26 +153,35 @@ class PhessWebStack(Stack):
             ),
             role=phess_web_lambda_role,
             memory_size=(1024),
-            timeout=Duration.minutes(15)
+            timeout=Duration.minutes(15),
         )
 
         # lambda on cron to create new json dumps daily
         modeling_lambda_rule = events.Rule(
             scope=self,
             id="modeling-lambda-rule",
-            schedule=events.Schedule.cron(
-                minute="0",
-                hour="0"
-            ),
-            targets=[
-                event_targets.LambdaFunction(
-                    handler=markov_modeling_lambda
-                    )
-            ]
+            schedule=events.Schedule.cron(minute="0", hour="0"),
+            targets=[event_targets.LambdaFunction(handler=markov_modeling_lambda)],
         )
 
         # text_gen_lambda
+        text_gen_lambda = _lambda.DockerImageFunction(
+            scope=self,
+            id="get-office-line-lambda",
+            code=_lambda.DockerImageCode.from_image_asset(
+                directory="phess_web/lambda/get_lines/"
+            ),
+            role=phess_web_lambda_role,
+            memory_size=(1024),
+            timeout=Duration.minutes(3),
+        )
 
         # API gateway
-        # gets called from my webpage
-        # calls the text gen lambda and displays a result
+        api = gateway.RestApi(scope=self, id="phess-textgen-api")
+        api.root.add_method(
+            http_method="GET",
+            integration=gateway.LambdaIntegration(
+                handler=text_gen_lambda,
+                proxy=True
+            )
+        )

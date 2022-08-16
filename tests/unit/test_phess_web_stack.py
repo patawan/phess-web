@@ -10,6 +10,7 @@ def test_sqs_queue_created():
     stack = PhessWebStack(app, "phess-web")
     template = assertions.Template.from_stack(stack)
 
+
 #     template.has_resource_properties("AWS::SQS::Queue", {
 #         "VisibilityTimeout": 300
 #     })

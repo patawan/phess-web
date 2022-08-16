@@ -24,8 +24,8 @@ def get_lines(event, context):
 def get_json_model(character, bucket, s3_client):
     object_key = f"{character}_model_json.json"
     file_content = s3_client.get_object(
-        Bucket=bucket, Key=object_key)["Body"].read()
-    model_json = json.load(file_content)
+        Bucket=bucket, Key=object_key)["Body"].read().decode("utf-8")
+    model_json = json.loads(file_content)
     model = mk.Text.from_json(model_json)
 
     return model

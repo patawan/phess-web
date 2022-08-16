@@ -165,13 +165,15 @@ class PhessWebStack(Stack):
         )
 
         # text_gen_lambda
-        text_gen_lambda = _lambda.Function(
+        text_gen_lambda = _lambda.DockerImageFunction(
             scope=self,
             id="get-office-line-lambda",
-            code=_lambda.Code.from_asset(path="phess_web/lambda/get_lines/"),
+            code=_lambda.DockerImageCode.from_image_asset(
+                directory="phess_web/lambda/get_lines/"
+            ),
             role=phess_web_lambda_role,
             memory_size=(1024),
-            timeout=Duration.minutes(1),
+            timeout=Duration.minutes(3),
         )
 
         # API gateway

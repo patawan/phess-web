@@ -14,9 +14,6 @@ Created on Mon Oct 14 20:46:43 2019
 
 import os
 import json
-from flask import Flask
-from flask import render_template, make_response
-from flask_restful import reqparse, abort, Api, Resource, request
 import markovify as mk
 
 

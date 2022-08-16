@@ -20,7 +20,7 @@ from flask_restful import reqparse, abort, Api, Resource, request
 import markovify as mk
 
 
-port = int(os.getenv('PORT', '5000'))
+port = int(os.getenv("PORT", "5000"))
 
 app = Flask(__name__)
 api = Api(app)
@@ -52,8 +52,8 @@ reconstituted_model_pam = mk.Text.from_json(pam_model_json)
 
 class landing(Resource):
     def get(self):
-        headers = {'Content-Type': 'text/html'}
-        return make_response(render_template('index.html'),200,headers)
+        headers = {"Content-Type": "text/html"}
+        return make_response(render_template("index.html"), 200, headers)
 
 
 class MichaelModel(Resource):
@@ -63,7 +63,7 @@ class MichaelModel(Resource):
         m = {"Michael Line": michael_line}
         # create JSON object
         output = json.dumps(m)
-        output=json.loads(output)
+        output = json.loads(output)
 
         return output
 
@@ -75,7 +75,7 @@ class JimModel(Resource):
         j = {"Jim Line": jim_line}
         # create JSON object
         output = json.dumps(j)
-        output=json.loads(output)
+        output = json.loads(output)
 
         return output
 
@@ -87,7 +87,7 @@ class PamModel(Resource):
         p = {"Pam Line": pam_line}
         # create JSON object
         output = json.dumps(p)
-        output=json.loads(output)
+        output = json.loads(output)
 
         return output
 
@@ -99,22 +99,23 @@ class DwightModel(Resource):
         d = {"Dwight Line": dwight_line}
         # create JSON object
         output = json.dumps(d)
-        output=json.loads(output)
+        output = json.loads(output)
 
         return output
 
+
 class HelloTori(Resource):
     def get(self):
-        return {'Hello': 'I love you! <3'}
+        return {"Hello": "I love you! <3"}
 
 
 api.add_resource(landing, "/")
-api.add_resource(MichaelModel, '/michael_model')
-api.add_resource(JimModel, '/jim_model')
-api.add_resource(PamModel, '/pam_model')
-api.add_resource(DwightModel, '/dwight_model')
+api.add_resource(MichaelModel, "/michael_model")
+api.add_resource(JimModel, "/jim_model")
+api.add_resource(PamModel, "/pam_model")
+api.add_resource(DwightModel, "/dwight_model")
 api.add_resource(HelloTori, "/luvu")
 
-if __name__ == '__main__':
-    #app.run(debug=True)
-    app.run(host='0.0.0.0', port=port)
+if __name__ == "__main__":
+    # app.run(debug=True)
+    app.run(host="0.0.0.0", port=port)

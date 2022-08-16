@@ -30,22 +30,38 @@ def create_models(event, context):
     all_lines = pd.read_excel(cwd + "/the-office-lines.xlsx")
 
     # SCRUB A DUB DUB
-    clean_lines = all_lines.loc[all_lines.deleted == False, :]  # only select rows that weren't deleted scenes
-    clean_lines['line_text'] = clean_lines['line_text'].str.replace(r"\[.*\]", "")  # remove all actions plus the brackets
-    clean_lines['speaker'] = clean_lines['speaker'].str.replace(r"\[.*\]", "")  # remove actions from speaker plus brackets
-    clean_lines['speaker'] = clean_lines['speaker'].str.replace("Dwight.", "Dwight")
-    clean_lines['speaker'] = clean_lines['speaker'].str.replace("Dwight:", "Dwight")  # fix spellings of Dwight
+    clean_lines = all_lines.loc[
+        all_lines.deleted == False, :
+    ]  # only select rows that weren't deleted scenes
+    clean_lines["line_text"] = clean_lines["line_text"].str.replace(
+        r"\[.*\]", ""
+    )  # remove all actions plus the brackets
+    clean_lines["speaker"] = clean_lines["speaker"].str.replace(
+        r"\[.*\]", ""
+    )  # remove actions from speaker plus brackets
+    clean_lines["speaker"] = clean_lines["speaker"].str.replace("Dwight.", "Dwight")
+    clean_lines["speaker"] = clean_lines["speaker"].str.replace(
+        "Dwight:", "Dwight"
+    )  # fix spellings of Dwight
 
-    michael_misspellings = ["Micheal", "Michel", "Micael", "Micahel",
-                            "Michae", "Michal", "Mihael", "Miichael"]
+    michael_misspellings = [
+        "Micheal",
+        "Michel",
+        "Micael",
+        "Micahel",
+        "Michae",
+        "Michal",
+        "Mihael",
+        "Miichael",
+    ]
 
     clean_lines = replace_names(michael_misspellings, clean_lines)
 
     # create the sets of lines for a few characters. The resultant is a Series
-    michael_lines = clean_lines.loc[clean_lines.speaker == "Michael", 'line_text']
-    jim_lines = clean_lines.loc[clean_lines.speaker == "Jim", 'line_text']
-    pam_lines = clean_lines.loc[clean_lines.speaker == "Pam", 'line_text']
-    dwight_lines = clean_lines.loc[clean_lines.speaker == "Dwight", 'line_text']
+    michael_lines = clean_lines.loc[clean_lines.speaker == "Michael", "line_text"]
+    jim_lines = clean_lines.loc[clean_lines.speaker == "Jim", "line_text"]
+    pam_lines = clean_lines.loc[clean_lines.speaker == "Pam", "line_text"]
+    dwight_lines = clean_lines.loc[clean_lines.speaker == "Dwight", "line_text"]
 
     # Converts the Series above to one long string
     michael_lines_string = michael_lines.str.cat(sep=" ")
@@ -69,7 +85,7 @@ def create_models(event, context):
         "michael_model_json": michael_model_json,
         "jim_model_json": jim_model_json,
         "dwight_model_json": dwight_model_json,
-        "pam_model_json": pam_model_json
+        "pam_model_json": pam_model_json,
     }
 
     s3 = boto3.client("s3")
@@ -78,7 +94,7 @@ def create_models(event, context):
         s3.put_object(
             Body=json.dumps(model_json_dict[name]),
             Bucket="office-model-bucket",
-            Key=f"{name}.json"
+            Key=f"{name}.json",
         )
 
     print("Models created and serialized!")

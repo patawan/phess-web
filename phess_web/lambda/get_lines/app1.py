@@ -8,7 +8,7 @@ def get_lines(event, context):
     s3 = boto3.client("s3")
     bucket_name = "office-model-bucket"
 
-    character = event["character"]
+    character = event["queryStringParameters"]["character"]
 
     recon_model = get_json_model(character, bucket_name, s3)
 

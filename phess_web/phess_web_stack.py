@@ -176,5 +176,10 @@ class PhessWebStack(Stack):
 
         # API gateway
         api = gateway.RestApi(scope=self, id="phess-textgen-api")
-        # gets called from my webpage
-        # calls the text gen lambda and displays a result
+        api.root.add_method(
+            http_method="GET",
+            integration=gateway.LambdaIntegration(
+                handler=text_gen_lambda,
+                proxy=True
+            )
+        )

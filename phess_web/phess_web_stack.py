@@ -182,7 +182,21 @@ class PhessWebStack(Stack):
         )
 
         # text_gen_lambda
+        text_gen_lambda = _lambda.Function(
+            scope=self,
+            id="get-office-line-lambda",
+            code=_lambda.Code.from_asset(
+                path="phess_web/lambda/get_lines/"
+            ),
+            role=phess_web_lambda_role,
+            memory_size=(1024),
+            timeout=Duration.minutes(1)
+        )
 
         # API gateway
+        api = gateway.RestApi(
+            scope=self,
+            id="phess-textgen-api"
+        )
         # gets called from my webpage
         # calls the text gen lambda and displays a result

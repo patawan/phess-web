@@ -177,7 +177,16 @@ class PhessWebStack(Stack):
         )
 
         # API gateway
-        api = gateway.RestApi(scope=self, id="phess-textgen-api")
+        api = gateway.RestApi(
+            scope=self,
+            id="phess-textgen-api",
+            deploy=True,
+            deploy_options=gateway.StageOptions(
+                throttling_burst_limit=50,
+                throttling_rate_limit=10,
+                stage_name="prod"
+                )
+        )
         api.root.add_method(
             http_method="GET",
             integration=gateway.LambdaIntegration(

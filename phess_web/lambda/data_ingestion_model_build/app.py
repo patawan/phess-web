@@ -17,45 +17,11 @@ class POSifiedTextNLTK(mk.Text):
         return sentence
 
 
-def replace_names(names_list, lines_df):
-    for misspelling in names_list:
-        lines_df.loc[lines_df.speaker == misspelling, "speaker"] = "Michael"
-    return lines_df
-
-
 def create_models(event, context):
 
     # import the excel file to a pandas data frame
     cwd = os.getcwd()
-    all_lines = pd.read_csv(cwd + "/the-office-lines.csv")
-
-    # SCRUB A DUB DUB
-    clean_lines = all_lines.loc[
-        all_lines.deleted == False, :
-    ]  # only select rows that weren't deleted scenes
-    clean_lines["line_text"] = clean_lines["line_text"].str.replace(
-        r"\[.*\]", ""
-    )  # remove all actions plus the brackets
-    clean_lines["speaker"] = clean_lines["speaker"].str.replace(
-        r"\[.*\]", ""
-    )  # remove actions from speaker plus brackets
-    clean_lines["speaker"] = clean_lines["speaker"].str.replace("Dwight.", "Dwight")
-    clean_lines["speaker"] = clean_lines["speaker"].str.replace(
-        "Dwight:", "Dwight"
-    )  # fix spellings of Dwight
-
-    michael_misspellings = [
-        "Micheal",
-        "Michel",
-        "Micael",
-        "Micahel",
-        "Michae",
-        "Michal",
-        "Mihael",
-        "Miichael",
-    ]
-
-    clean_lines = replace_names(michael_misspellings, clean_lines)
+    clean_lines = pd.read_csv(cwd + "/of-lines.csv")
 
     # create the sets of lines for a few characters. The resultant is a Series
     michael_lines = clean_lines.loc[clean_lines.speaker == "Michael", "line_text"]

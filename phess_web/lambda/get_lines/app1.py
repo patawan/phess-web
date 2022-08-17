@@ -1,24 +1,40 @@
-import os
 import json
 import boto3
 import markovify as mk
 
 
 def get_lines(event, context):
-    s3 = boto3.client("s3")
-    bucket_name = "office-model-bucket"
 
-    character = event["queryStringParameters"]["character"]
+    try:
+        s3 = boto3.client("s3")
+        bucket_name = "office-model-bucket"
 
-    recon_model = get_json_model(character, bucket_name, s3)
+        character = event["queryStringParameters"]["character"]
 
-    line = make_line(recon_model)
+        recon_model = get_json_model(character, bucket_name, s3)
 
-    output_json = {f"{character} line": line}
-    output_dump = json.dumps(output_json)
-    final_output = json.loads(output_dump)
+        line = make_line(recon_model)
 
-    return final_output
+        output_json = {f"{character} line": line}
+
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 200,
+            "body": json.dumps(output_json),
+            "headers": {
+                "Content-Type": "application/json"
+                },
+            }
+
+    except Exception as e:
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 400,
+            "body": json.dumps(e),
+            "headers": {
+                "Content-Type": "application/json"
+                },
+            }
 
 
 def get_json_model(character, bucket, s3_client):

@@ -27,7 +27,7 @@ def create_models(event, context):
 
     # import the excel file to a pandas data frame
     cwd = os.getcwd()
-    all_lines = pd.read_excel(cwd + "/the-office-lines.xlsx")
+    all_lines = pd.read_csv(cwd + "/the-office-lines.csv")
 
     # SCRUB A DUB DUB
     clean_lines = all_lines.loc[
@@ -81,11 +81,68 @@ def create_models(event, context):
     dwight_model_json = dwight_modelNLTK.to_json()
     pam_model_json = pam_modelNLTK.to_json()
 
+    pr_lines = pd.read_csv(cwd + "/pr-lines.csv")
+    leslie_lines = pr_lines.loc[pr_lines.speaker == "Leslie Knope", "line_text"]
+    ron_lines = pr_lines.loc[pr_lines.speaker == "Ron Swanson", "line_text"]
+    tom_lines = pr_lines.loc[pr_lines.speaker == "Tom Haverford", "line_text"]
+    ann_lines = pr_lines.loc[pr_lines.speaker == "Ann Perkins", "line_text"]
+    april_lines = pr_lines.loc[pr_lines.speaker == "April Ludgate", "line_text"]
+    andy_lines = pr_lines.loc[pr_lines.speaker == "Andy Dwyer", "line_text"]
+    ben_lines = pr_lines.loc[pr_lines.speaker == "Ben Wyatt", "line_text"]
+    chris_lines = pr_lines.loc[pr_lines.speaker == "Chris Traeger", "line_text"]
+    jerry_lines = pr_lines.loc[pr_lines.speaker == "Jerry Gergich", "line_text"]
+    donna_lines = pr_lines.loc[pr_lines.speaker == "Donna Meagle", "line_text"]
+
+    # Converts the Series above to one long string
+    leslie_lines_string = leslie_lines.str.cat(sep=" ")
+    ron_lines_string = ron_lines.str.cat(sep=" ")
+    tom_lines_string = tom_lines.str.cat(sep=" ")
+    ann_lines_string = ann_lines.str.cat(sep=" ")
+    april_lines_string = april_lines.str.cat(sep=" ")
+    andy_lines_string = andy_lines.str.cat(sep=" ")
+    ben_lines_string = ben_lines.str.cat(sep=" ")
+    chris_lines_string = chris_lines.str.cat(sep=" ")
+    jerry_lines_string = jerry_lines.str.cat(sep=" ")
+    donna_lines_string = donna_lines.str.cat(sep=" ")
+
+    leslie_modelNLTK = POSifiedTextNLTK(leslie_lines_string, state_size=3)
+    ron_modelNLTK = POSifiedTextNLTK(ron_lines_string, state_size=3)
+    tom_modelNLTK = POSifiedTextNLTK(tom_lines_string, state_size=3)
+    ann_modelNLTK = POSifiedTextNLTK(ann_lines_string, state_size=3)
+    april_modelNLTK = POSifiedTextNLTK(april_lines_string, state_size=3)
+    andy_modelNLTK = POSifiedTextNLTK(andy_lines_string, state_size=3)
+    ben_modelNLTK = POSifiedTextNLTK(ben_lines_string, state_size=3)
+    chris_modelNLTK = POSifiedTextNLTK(chris_lines_string, state_size=3)
+    jerry_modelNLTK = POSifiedTextNLTK(jerry_lines_string, state_size=3)
+    donna_modelNLTK = POSifiedTextNLTK(donna_lines_string, state_size=3)
+
+    # exporting the models to json files
+    leslie_model_json = leslie_modelNLTK.to_json()
+    ron_model_json = ron_modelNLTK.to_json()
+    tom_model_json = tom_modelNLTK.to_json()
+    ann_model_json = ann_modelNLTK.to_json()
+    april_model_json = april_modelNLTK.to_json()
+    andy_model_json = andy_modelNLTK.to_json()
+    ben_model_json = ben_modelNLTK.to_json()
+    chris_model_json = chris_modelNLTK.to_json()
+    jerry_model_json = jerry_modelNLTK.to_json()
+    donna_model_json = donna_modelNLTK.to_json()
+
     model_json_dict = {
         "michael_model_json": michael_model_json,
         "jim_model_json": jim_model_json,
         "dwight_model_json": dwight_model_json,
         "pam_model_json": pam_model_json,
+        "leslie_model_json": leslie_model_json,
+        "ron_model_json": ron_model_json,
+        "tom_model_json": tom_model_json,
+        "ann_model_json": ann_model_json,
+        "april_model_json": april_model_json,
+        "andy_model_json": andy_model_json,
+        "ben_model_json": ben_model_json,
+        "chris_model_json": chris_model_json,
+        "jerry_model_json": jerry_model_json,
+        "donna_model_json": donna_model_json,
     }
 
     s3 = boto3.client("s3")

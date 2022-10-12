@@ -17,6 +17,39 @@ class POSifiedTextNLTK(mk.Text):
         return sentence
 
 
+the_office = {
+    "characters": {
+        "michael": "Michael",
+        "jim": "Jim",
+        "pam": "Pam",
+        "dwight": "Dwight"
+    },
+    "file_location": {
+        "/of-lines.csv"
+        }
+}
+
+p_and_r = {
+    "characters": {
+        "leslie": "Leslie Knope",
+        "ron": "Ron Swanson",
+        "tom": "Tom Haverford",
+        "ann": "Ann Perkins",
+        "april": "April Ludgate",
+        "andy": "Andy Dwyer",
+        "ben": "Ben Wyatt",
+        "chris": "Chris Traeger",
+        "jerry": "Jerry Gergich",
+        "donna": "Donna Meagle"
+    },
+    "file_location": {
+        "/pr-lines.csv"
+        }
+}
+
+shows = [the_office, p_and_r]
+
+
 def create_models(event, context):
 
     # import the excel file to a pandas data frame

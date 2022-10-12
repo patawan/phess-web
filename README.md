@@ -1,58 +1,43 @@
 
-# Welcome to your CDK Python project!
+# Welcome to my webpage!
 
-This is a blank project for Python development with CDK.
+This holds all the code to stand up my personal webpage as well as some other goodies.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+### Mike Schur Dialog Generator
 
-To manually create a virtualenv on MacOS and Linux:
+I'm a big fan of many of the shows Michael Schur has produced: The Office, Parks and Rec, Booklyn 99, The Good Place, etc. While I was working on my Masters I created a Jupyter notebook that used Natural Language Processing to read in all of the scripts from The Office and spit out new lines of dialog for a few selected characters.
 
-```
-$ python3 -m venv .venv
-```
+After building out expertise in AWS I decided to have some fun and build something similar using AWS resources. As of right now there are many more characters you can get dialog for:
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+**The Office**
+- Michael Scott
+- Dwight Schrute
+- Jim Halpert
+- Pam Beesly
 
-```
-$ source .venv/bin/activate
-```
+**Parks and Recreation**
+- Leslie Knope
+- Ron Swanson
+- Tom Haverford
+- Ann Perkins
+- April Ludgate
+- Andy Dwyer
+- Ben Wyatt
+- Chris Traeger
+- Jerry/Garry/Larry Gergich
+- Donna Meagle
 
-If you are a Windows platform, you would activate the virtualenv like this:
 
-```
-% .venv\Scripts\activate.bat
-```
+The code in this repo includes a public API enpoint that you can access with a simple `get` request to the endpoint `https://whph7zzofa.execute-api.us-east-1.amazonaws.com/prod/` and include a `character` parameter. For example:
 
-Once the virtualenv is activated, you can install the required dependencies.
+`curl https://whph7zzofa.execute-api.us-east-1.amazonaws.com/prod?character=dwight`
 
-```
-$ pip install -r requirements.txt
-```
+This yields the following JSON output:
+`{"dwight line": "A couple of bad reviews there, you might as well try to be halfway accurate."}`
 
-At this point you can now synthesize the CloudFormation template for this code.
+Many of the lines may be gibberish and that's okay! The point of this project was not to create *actual* human readable dialog. It was merely to have some fun and learn some new tools and services.
 
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
+There is a pretty low throttling limit to the API so it will easily choke if you throw too much at it. It's also likely your first few calls will throw an Internal Server Error, since the underlying Lambda function may be cold. It just takes a minute to warm back up.
 
 Enjoy!

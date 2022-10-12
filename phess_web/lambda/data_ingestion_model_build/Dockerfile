@@ -7,7 +7,7 @@ COPY app.py ${LAMBDA_TASK_ROOT}
 # from your project folder.
 
 COPY requirements.txt  .
-COPY the-office-lines.csv .
+COPY of-lines.csv .
 COPY pr-lines.csv .
 RUN  pip3 install -r requirements.txt --target "${LAMBDA_TASK_ROOT}"
 

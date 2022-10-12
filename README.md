@@ -6,7 +6,7 @@ This holds all the code to stand up my personal webpage as well as some other go
 
 ### Mike Schur Dialog Generator
 
-I'm a big fan of many of the shows Michael Schur has produced: The Office, Parks and Rec, Booklyn 99, The Good Place, etc. While I was working on my Masters I created a Jupyter notebook that used Natural Language Processing to read in all of the scripts from The Office and spit out new lines of dialog for a few selected characters.
+I'm a big fan of many of the shows Michael Schur has produced: The Office, Parks and Rec, Booklyn 99, The Good Place, etc. While I was working on my Masters I created a Jupyter notebook that used Natural Language Processing to read in all of the scripts from The Office and spit out new lines of dialog for a few selected characters. The code is EXTREMELY BAD! This was one of my first "big" python projects so my main goal was to just get it functioning. I've been slowly improving the codebase as time allows.
 
 After building out expertise in AWS I decided to have some fun and build something similar using AWS resources. As of right now there are many more characters you can get dialog for:
 

@@ -1,4 +1,4 @@
-name: Deploy HeathBot stack
+name: Deploy phess web stack
 
 on:
   push:
